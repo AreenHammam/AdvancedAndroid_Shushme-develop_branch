@@ -17,9 +17,9 @@ import android.widget.Toast;
 import com.example.android.NavSite.R;
 import com.example.android.NavSite.itemRecycleViewActivity;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
+//import org.jsoup.Jsoup;
+//import org.jsoup.nodes.Document;
+//import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -45,7 +45,8 @@ public class CrawlerActivity extends Activity implements View.OnClickListener {
     boolean crawlingRunning;
     // For sending message to Handler in order to stop crawling after 60000 ms
     private static final int MSG_STOP_CRAWLING = 111;
-    private static final int CRAWLING_RUNNING_TIME = 60000;
+    private static final int CRAWLING_RUNNING_TIME = 2500;
+    private static final int MAX_CRAWLED_URL = 4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +101,7 @@ public class CrawlerActivity extends Activity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         int viewId = v.getId();
+        Log.i(TAG, "onClick: v"+v);
         switch (viewId) {
             case R.id.start:
                 String webUrl = urlInputView.getText().toString();
@@ -121,9 +123,9 @@ public class CrawlerActivity extends Activity implements View.OnClickListener {
                 // clicking stop button
                 handler.removeMessages(MSG_STOP_CRAWLING);
                 stopCrawling();
-                Intent ii = new Intent(this.getApplicationContext(),itemRecycleViewActivity.class);
-                //    ii.putExtra("data",arr.get(0));
-                startActivity(ii);
+          //      Intent ii = new Intent(this.getApplicationContext(),itemRecycleViewActivity.class);
+            //        ii.putExtra("data",arr.get(0));
+             //   startActivity(ii);
 
                 break;
         }
@@ -147,34 +149,37 @@ public class CrawlerActivity extends Activity implements View.OnClickListener {
             crawlingRunning = false;
             if (crawledUrlCount > 0)
                 Toast.makeText(getApplicationContext(),
-                        printCrawledEntriesFromDb() + "pages crawled",
+                        "" + "pages crawled",
                         Toast.LENGTH_SHORT).show();
 
             crawledUrlCount = 0;
             progressText.setText("");
+
+            Intent intent = new Intent(this.getApplicationContext(), itemRecycleViewActivity.class);
+            startActivity(intent);
         }
+
+
     }
-
-
     ///
 
     private String mHtmlString="";
     private void extractDataFromURL(String url) {
         try {
-            Document doc = Jsoup.connect(url).get();
+         //   Document doc = Jsoup.connect(url).get();
 
-            Elements elements = doc.select("div > P"); // Find a h1 directly following a p.
+     //       Elements elements = doc.select("div > P"); // Find a h1 directly following a p.
 
 
-            Elements links = elements.select("p"); //this is a para inside divisino <div id=mp-tfa><p>...</p>/div>)
-            mHtmlString = elements.toString();//now mHtmlString contains the text inside the para
+        //    Elements links = elements.select("p"); //this is a para inside divisino <div id=mp-tfa><p>...</p>/div>)
+         //   mHtmlString = elements.toString();//now mHtmlString contains the text inside the para
 
 //            Intent ii = new Intent(this.getApplicationContext(),itemRecycleViewActivity.class);
 //            startActivity(ii);
 //
 
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -184,15 +189,12 @@ public class CrawlerActivity extends Activity implements View.OnClickListener {
      *
      * @return number of rows saved in crawling database
      */
-    ArrayList<String> arr;
+  //  ArrayList<String> arr;
     protected int printCrawledEntriesFromDb() {
-
+//TODO: this func is not working
         int count = 0;
         CrawlerDB mCrawlerDB = new CrawlerDB(this);
         SQLiteDatabase db = mCrawlerDB.getReadableDatabase();
-
-
-
 
         Cursor mCursor = db.query(CrawlerDB.TABLE_NAME, null, null, null, null,
                 null, null);
@@ -206,7 +208,7 @@ public class CrawlerActivity extends Activity implements View.OnClickListener {
             for (int i = 0; i < count; i++) {
                 Log.d("AndroidSRC_Crawler",
                         "Crawled Url " + mCursor.getString(columnIndex));
-                boolean add = arr.add(mCursor.getString(columnIndex));
+               // boolean add = arr.add(mCursor.getString(columnIndex));
                 mCursor.moveToNext();
             }
 
@@ -226,8 +228,10 @@ public class CrawlerActivity extends Activity implements View.OnClickListener {
             String name = getIntent().getStringExtra("name");
             String address = getIntent().getStringExtra("address");
 
-
-            urlInputView.setText("https://www.google.co.il/search?"+name+" "+address);
+name = name.replace(" ","_");
+address = address.replace(" ","_");
+            urlInputView.setText("http://www.google.co.il/search?"+name+" "+address);
+            Log.d(TAG, "getIncomingIntent: "+urlInputView.getText().toString());
             fff(this.startButton);
             //  setTxtData("name:"+name+" address"+address);
 
@@ -251,6 +255,7 @@ public class CrawlerActivity extends Activity implements View.OnClickListener {
 
     public void fff(View v){
         int viewId = v.getId();
+        Log.i(TAG, "fff: "+viewId);
         switch (viewId) {
             case R.id.start:
                 String webUrl = urlInputView.getText().toString();

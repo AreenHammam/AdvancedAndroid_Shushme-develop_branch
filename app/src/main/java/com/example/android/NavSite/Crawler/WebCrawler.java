@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
+import android.util.Log;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -108,7 +109,6 @@ public class WebCrawler {
         @Override
         public void run() {
             String pageContent = retreiveHtmlContent(mUrl);
-
             if (!TextUtils.isEmpty(pageContent.toString())) {
                 insertIntoCrawlerDB(mUrl, pageContent);
                 synchronized (lock) {
@@ -203,7 +203,7 @@ public class WebCrawler {
      * @param result - html body content of url
      */
     public void insertIntoCrawlerDB(String mUrl, String result) {
-
+String TAG="insertIntoCrawlerDB";
         if (TextUtils.isEmpty(result))
             return;
 
@@ -211,7 +211,7 @@ public class WebCrawler {
         ContentValues values = new ContentValues();
         values.put(CrawlerDB.COLUMNS_NAME.CRAWLED_URL, mUrl);
         values.put(CrawlerDB.COLUMNS_NAME.CRAWLED_PAGE_CONTENT, result);
-
+        Log.i(TAG, "insertIntoCrawlerDB: ");
         db.insert(CrawlerDB.TABLE_NAME, null, values);
     }
 

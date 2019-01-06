@@ -245,33 +245,55 @@ public class MainActivity extends AppCompatActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.i("v", String.valueOf(resultCode));
         if (requestCode == PLACE_PICKER_REQUEST && resultCode == RESULT_OK) {
+
             // will get all the information about the selected place in the form of Place object.
             // the we need to store in a data base, but google only allows storing place id, and the retrieve the info from the server when we need them
             Place place = PlacePicker.getPlace(this, data);
+
             if (place == null) {
                 Log.i(TAG, "No place selected");
                 return;
             }
 
+                List<Integer> types= place.getPlaceTypes();
+            Log.i(TAG, "onActivityResult: types:"+types);
+
+            if(true){
+//            if(types.contains(66)){
+
             // Extract the place information from the API
             String placeName = place.getName().toString();
             String placeAddress = place.getAddress().toString();
             String placeID = place.getId();
-
-            List<Integer> types= place.getPlaceTypes();
-
-            Log.i(TAG, "onActivityResult: types:"+types);
-
-            // Insert a new place into DB
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(PlaceContract.PlaceEntry.COLUMN_PLACE_ID, placeID);
-            getContentResolver().insert(PlaceContract.PlaceEntry.CONTENT_URI, contentValues);
+            LatLng lat = place.getLatLng();
 
 
-            // Get live data information
-            refreshPlacesData();
+
+
+                // Insert a new place into DB
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(PlaceContract.PlaceEntry.COLUMN_PLACE_ID, placeID);
+                getContentResolver().insert(PlaceContract.PlaceEntry.CONTENT_URI, contentValues);
+
+
+            // TYPE_MUSEUM || TYPE_POINT_OF_INTEREST ....
+            // https://developers.google.com/android/reference/com/google/android/gms/location/places/Place.html
+                Log.i(TAG, "onActivityResult: if is true"+lat);
+
+            }
+            else{
+                Log.i(TAG, "onActivityResult: if is false");
+
+                Toast.makeText(this, getString(R.string.dont_support_this_type_of_places), Toast.LENGTH_LONG).show();
+
+            }
+                // Get live data information
+                refreshPlacesData();
+
+
         }
     }
+
 
     @Override
     public void onResume() {

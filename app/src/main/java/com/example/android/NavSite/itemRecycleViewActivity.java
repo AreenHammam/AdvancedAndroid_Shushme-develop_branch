@@ -53,7 +53,7 @@ public class itemRecycleViewActivity extends AppCompatActivity{
 
             String address = getIntent().getStringExtra("address");
 
-        String summary = "The building was built in 1978-1974 , The plan for a tall, narrow tower towering over a wide horizontal surface was proposed by the architect Oscar Niemeyer. It was designed by Prof. Shlomo Gilad . has 30 floors and is 102 meters high. It was named after the third prime minister , Levi Eshkol.";
+        String summary = "summary should be here";
 
 
 
@@ -64,6 +64,9 @@ public class itemRecycleViewActivity extends AppCompatActivity{
 
 
         }
+//        if(getIntent().hasExtra("data")){
+//            setTxtData("data:"+data);
+//        }
 
         // https://www.youtube.com/watch?v=ZXoGG2XTjzU
 

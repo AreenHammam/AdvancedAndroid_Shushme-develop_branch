@@ -71,7 +71,8 @@ public class PlaceListAdapter extends RecyclerView.Adapter<PlaceListAdapter.Plac
 
                     else {
                     Toast.makeText(mContext, "Short Click: " + mPlaces.get(position), Toast.LENGTH_SHORT);
-                    Intent intent = new Intent(mContext,itemRecycleViewActivity.class);
+//                    Intent intent = new Intent(mContext,itemRecycleViewActivity.class);
+                    Intent intent = new Intent(mContext,CrawlerActivity.class);
                     intent.putExtra("address",mPlaces.get(position).getAddress());
                     intent.putExtra("name",mPlaces.get(position).getName());
                     intent.putExtra("id",mPlaces.get(position).getId());

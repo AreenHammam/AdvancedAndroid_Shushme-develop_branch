@@ -8,22 +8,21 @@
 
     <ImageView
         android:id="@+id/image"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="100"
+        android:layout_width="374dp"
+        android:layout_height="333dp"
+        android:layout_weight="10"
         android:scaleType="centerInside"
         android:src="@drawable/esho" />
 
 
     <TextView
         android:id="@+id/txtData"
-        android:text="Data"
-        android:textColor="#000"
-        android:textSize="20sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="20dp"
-        />
+        android:text="summary should be here??"
+        android:textColor="#000"
+        android:textSize="20sp" />
 
 </LinearLayout>
