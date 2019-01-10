@@ -125,6 +125,7 @@ public class WebCrawler {
                 Document doc = Jsoup.parse(pageContent.toString());
                 Elements links = doc.select("a[href]");
                 for (Element link : links) {
+                    Log.i("links", "run: "+link);
                     String extractedLink = link.attr("href");
                     if (!TextUtils.isEmpty(extractedLink)) {
                         synchronized (lock) {

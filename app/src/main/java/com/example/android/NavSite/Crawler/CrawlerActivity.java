@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.example.android.NavSite.R;
 import com.example.android.NavSite.itemRecycleViewActivity;
 
@@ -101,7 +102,7 @@ public class CrawlerActivity extends Activity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         int viewId = v.getId();
-        Log.i(TAG, "onClick: v"+v);
+        Log.i(TAG, "onClick: v" + v);
         switch (viewId) {
             case R.id.start:
                 String webUrl = urlInputView.getText().toString();
@@ -123,9 +124,9 @@ public class CrawlerActivity extends Activity implements View.OnClickListener {
                 // clicking stop button
                 handler.removeMessages(MSG_STOP_CRAWLING);
                 stopCrawling();
-          //      Intent ii = new Intent(this.getApplicationContext(),itemRecycleViewActivity.class);
-            //        ii.putExtra("data",arr.get(0));
-             //   startActivity(ii);
+                //      Intent ii = new Intent(this.getApplicationContext(),itemRecycleViewActivity.class);
+                //        ii.putExtra("data",arr.get(0));
+                //   startActivity(ii);
 
                 break;
         }
@@ -134,7 +135,9 @@ public class CrawlerActivity extends Activity implements View.OnClickListener {
     private Handler handler = new Handler() {
         public void handleMessage(android.os.Message msg) {
             stopCrawling();
-        };
+        }
+
+        ;
     };
 
     /**
@@ -163,16 +166,17 @@ public class CrawlerActivity extends Activity implements View.OnClickListener {
     }
     ///
 
-    private String mHtmlString="";
+    private String mHtmlString = "";
+
     private void extractDataFromURL(String url) {
         try {
-         //   Document doc = Jsoup.connect(url).get();
+            //   Document doc = Jsoup.connect(url).get();
 
-     //       Elements elements = doc.select("div > P"); // Find a h1 directly following a p.
+            //       Elements elements = doc.select("div > P"); // Find a h1 directly following a p.
 
 
-        //    Elements links = elements.select("p"); //this is a para inside divisino <div id=mp-tfa><p>...</p>/div>)
-         //   mHtmlString = elements.toString();//now mHtmlString contains the text inside the para
+            //    Elements links = elements.select("p"); //this is a para inside divisino <div id=mp-tfa><p>...</p>/div>)
+            //   mHtmlString = elements.toString();//now mHtmlString contains the text inside the para
 
 //            Intent ii = new Intent(this.getApplicationContext(),itemRecycleViewActivity.class);
 //            startActivity(ii);
@@ -184,12 +188,13 @@ public class CrawlerActivity extends Activity implements View.OnClickListener {
         }
 
     }
+
     /**
      * API to output crawled urls in logcat
      *
      * @return number of rows saved in crawling database
      */
-  //  ArrayList<String> arr;
+    //  ArrayList<String> arr;
     protected int printCrawledEntriesFromDb() {
 //TODO: this func is not working
         int count = 0;
@@ -203,12 +208,12 @@ public class CrawlerActivity extends Activity implements View.OnClickListener {
             mCursor.moveToFirst();
             int columnIndex = mCursor
                     .getColumnIndex(CrawlerDB.COLUMNS_NAME.CRAWLED_URL);
-            String content="";
+            String content = "";
 
             for (int i = 0; i < count; i++) {
                 Log.d("AndroidSRC_Crawler",
                         "Crawled Url " + mCursor.getString(columnIndex));
-               // boolean add = arr.add(mCursor.getString(columnIndex));
+                // boolean add = arr.add(mCursor.getString(columnIndex));
                 mCursor.moveToNext();
             }
 
@@ -219,24 +224,34 @@ public class CrawlerActivity extends Activity implements View.OnClickListener {
     }
 
 
-    private void getIncomingIntent(){
+    private void getIncomingIntent() {
         Log.d(TAG, "getIncomingIntent: checking for incoming intents ");
 
-        if(getIntent().hasExtra("name") && getIntent().hasExtra("address")){
+        if (getIntent().hasExtra("name") && getIntent().hasExtra("address")) {
             Log.d(TAG, "getIncomingIntent: found intent extras");
 
             String name = getIntent().getStringExtra("name");
             String address = getIntent().getStringExtra("address");
 
-name = name.replace(" ","_");
-address = address.replace(" ","_");
-            urlInputView.setText("http://www.google.co.il/search?"+name+" "+address);
-            Log.d(TAG, "getIncomingIntent: "+urlInputView.getText().toString());
-            fff(this.startButton);
+            name = name.replace(" ", "_");
+            address = address.replace(" ", "_");
+            urlInputView.setText("http://www.google.co.il/search?" + name + " " + address);
+            Log.d(TAG, "getIncomingIntent: " + urlInputView.getText().toString()+"id "+getIntent().getStringExtra("id"));
+
+            if (getIntent().getStringExtra("id").equals("ChIJwzsQYMS6HRURJOOQt_quN6s")) {
+                Log.i(TAG, "getIncomingIntent: id is in db");
+                Intent intent = new Intent(this.getApplicationContext(), itemRecycleViewActivity.class);
+                intent.putExtra("SummaryFromDB","this is from database");
+                intent.putExtra("isInDB","true");
+
+                startActivity(intent);
+            } else {
+                Log.i(TAG, "getIncomingIntent: id is not in db");
+
+                fff(this.startButton);
+            }
+
             //  setTxtData("name:"+name+" address"+address);
-
-
-
 
 
         }
@@ -253,9 +268,9 @@ address = address.replace(" ","_");
 //
 //    }
 
-    public void fff(View v){
+    public void fff(View v) {
         int viewId = v.getId();
-        Log.i(TAG, "fff: "+viewId);
+        Log.i(TAG, "fff: " + viewId);
         switch (viewId) {
             case R.id.start:
                 String webUrl = urlInputView.getText().toString();
@@ -282,7 +297,6 @@ address = address.replace(" ","_");
                 break;
         }
     }
-
 
 
 }

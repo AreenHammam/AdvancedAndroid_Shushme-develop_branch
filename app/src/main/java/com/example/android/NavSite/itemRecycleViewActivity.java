@@ -43,6 +43,10 @@ public class itemRecycleViewActivity extends AppCompatActivity{
 
     private void getIncomingIntent(){
         Log.d(TAG, "getIncomingIntent: checking for incoming intents ");
+        if(getIntent().hasExtra("SummaryFromDB") && getIntent().hasExtra("isInDB")){
+            String summary = "SummaryFromDB";
+            setTxtData("summary:"+summary);
+        }
 
         if(getIntent().hasExtra("id") && getIntent().hasExtra("name") && getIntent().hasExtra("address") ){
             Log.d(TAG, "getIncomingIntent: found intent extras");
