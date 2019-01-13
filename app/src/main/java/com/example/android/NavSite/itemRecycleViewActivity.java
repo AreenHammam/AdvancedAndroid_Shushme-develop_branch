@@ -1,13 +1,17 @@
 package com.example.android.NavSite;
 
+import android.content.Context;
+import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.widget.TextView;
 
 import com.example.android.NavSite.Crawler.CrawlerDB;
@@ -15,6 +19,21 @@ import com.example.android.NavSite.Crawler.CrawlerDB;
 import org.jsoup.Jsoup;
 import org.w3c.dom.Document;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.nio.ByteBuffer;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.channels.WritableByteChannel;
 import java.util.ArrayList;
 
 /**
@@ -50,7 +69,7 @@ public class itemRecycleViewActivity extends AppCompatActivity {
         if (getIntent().hasExtra("SummaryFromDB") && getIntent().hasExtra("isInDB") && getIntent().hasExtra("id")) {
             String summary = getIntent().getStringExtra("SummaryFromDB");
             String id = getIntent().getStringExtra("id");
-            setTxtData("id:"+id+"<br><br><br>summary:" + summary);
+            setTxtData("id:" + id + "<br><br><br>summary:" + summary);
         } else {
             printCrawledEntriesFromDb();
         }
@@ -87,7 +106,14 @@ public class itemRecycleViewActivity extends AppCompatActivity {
         txtView.setText(Html.fromHtml("" + str + ""));
         txtView.setClickable(true);
         txtView.setMovementMethod(LinkMovementMethod.getInstance());
+        Log.i(TAG, "summary summary: " + txtView.getText());
 
+        //TODO: only after crawling
+        //   File file= new File("C:\\Users\\hamma\\AndroidStudioProjects\\AdvancedAndroid_Shushme-develop_branch\\app\\src\\main\\java\\com\\example\\android\\NavSite\\textSummarizer\\textToSummarize.txt");
+
+        Summarizer sum = new Summarizer();
+        String finalSum = sum.Summarize(txtView.getText().toString(), 100);
+        txtView.setText(finalSum);
     }
 
 
@@ -117,12 +143,13 @@ public class itemRecycleViewActivity extends AppCompatActivity {
                         org.jsoup.nodes.Document doc = Jsoup.parse(html);
                         String text = doc.body().select("div p, div>p, p, p>span,h1").text();
 //                        if(text!=null && text.length()>=100){
-                        if(false){
-                        text = text.substring(0, 100) + "...";}
-                        else{
-                            text+="...";
+                        if (false) {
+                            text = text.substring(0, 100) + "...";
+                        } else {
+                            text += "...";
                         }
-                        content += "<br><br><br>" + text + "<br><a href=\"" + mCursor.getString(columnIndex) + "\">" + mCursor.getString(columnIndex) + "</a>\n";
+//                        content += "<br><br><br>" + text + "<br><a href=\"" + mCursor.getString(columnIndex) + "\">" + mCursor.getString(columnIndex) + "</a>\n";
+                        content += "<br>" + text + "<br>\n";
                     }
                 }
                 mCursor.moveToNext();
