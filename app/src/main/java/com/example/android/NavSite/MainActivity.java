@@ -43,13 +43,14 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
 
-        LoaderManager.LoaderCallbacks<Cursor>{
+        LoaderManager.LoaderCallbacks<Cursor> {
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return null;
@@ -117,7 +118,6 @@ public class MainActivity extends AppCompatActivity implements
         });
 
 
-
         // Build up the LocationServices API client
         // Uses the addApi method to request the LocationServices API
         // Also uses enableAutoManage to automatically when to connect/suspend the client
@@ -135,8 +135,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-
-
     /***
      * Called when the Google API Client is successfully connected
      *
@@ -147,7 +145,6 @@ public class MainActivity extends AppCompatActivity implements
         refreshPlacesData();
         Log.i(TAG, "API Client Connection Successful!");
     }
-
 
 
     /***
@@ -197,7 +194,7 @@ public class MainActivity extends AppCompatActivity implements
             public void onResult(@NonNull PlaceBuffer places) {
                 mAdapter.swapPlaces(places);
 
-             //  mAdapter = new PlaceListAdapter(this, places);
+                //  mAdapter = new PlaceListAdapter(this, places);
                 mRecyclerView.setAdapter(mAdapter);
 
 
@@ -234,6 +231,30 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    /*
+    https://developers.google.com/android/reference/com/google/android/gms/location/places/Place.html
+    TYPE_AMUSEMENT_PARK = 3
+    TYPE_ART_GALLERY = 5
+    TYPE_CHURCH = 23
+    TYPE_GEOCODE = 1007
+    TYPE_MUSEUM = 66
+    TYPE_NATURAL_FEATURE = 1010
+    TYPE_POINT_OF_INTEREST = 1013
+    ESTABLISHMENT = 34?
+    TYPE_POLITICAL = 1012
+    */
+
+    private int[] supportedTypes = {3, 4, 23, 1007, 66, 1010, 34, 1012};
+    public boolean checkIfTypeIsSupported(List<Integer> types) {
+        for (int i = 0; i < supportedTypes.length; i++) {
+            for (int j = 0; j < types.size(); j++) {
+                if (supportedTypes[i] == types.get(j)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     /***
      * Called when the Place Picker Activity returns back with a selected place (or after canceling)
@@ -255,19 +276,22 @@ public class MainActivity extends AppCompatActivity implements
                 return;
             }
 
-                List<Integer> types= place.getPlaceTypes();
-            Log.i(TAG, "onActivityResult: types:"+types);
+            List<Integer> types = place.getPlaceTypes();
+            Log.i(TAG, "onActivityResult: types:" + types);
 
-            if(true){
+
+            boolean isSupported = checkIfTypeIsSupported(types);
+            Log.i(TAG, "onActivityResult: isSupported:" + isSupported);
+
+
+            if (isSupported) {
 //            if(types.contains(66)){
 
-            // Extract the place information from the API
-            String placeName = place.getName().toString();
-            String placeAddress = place.getAddress().toString();
-            String placeID = place.getId();
-            LatLng lat = place.getLatLng();
-
-
+                // Extract the place information from the API
+                String placeName = place.getName().toString();
+                String placeAddress = place.getAddress().toString();
+                String placeID = place.getId();
+                LatLng lat = place.getLatLng();
 
 
                 // Insert a new place into DB
@@ -276,19 +300,16 @@ public class MainActivity extends AppCompatActivity implements
                 getContentResolver().insert(PlaceContract.PlaceEntry.CONTENT_URI, contentValues);
 
 
-            // TYPE_MUSEUM || TYPE_POINT_OF_INTEREST ....
-            // https://developers.google.com/android/reference/com/google/android/gms/location/places/Place.html
-                Log.i(TAG, "onActivityResult: if is true"+lat);
+                Log.i(TAG, "onActivityResult: if is true" + lat);
 
-            }
-            else{
+            } else {
                 Log.i(TAG, "onActivityResult: if is false");
 
                 Toast.makeText(this, getString(R.string.dont_support_this_type_of_places), Toast.LENGTH_LONG).show();
 
             }
-                // Get live data information
-                refreshPlacesData();
+            // Get live data information
+            refreshPlacesData();
 
 
         }
@@ -331,8 +352,6 @@ public class MainActivity extends AppCompatActivity implements
                 new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                 PERMISSIONS_REQUEST_FINE_LOCATION);
     }
-
-
 
 
 }

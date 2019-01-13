@@ -105,6 +105,9 @@ public class WebCrawler {
             this.mCallback = callback;
             this.mUrl = Url;
         }
+        public static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36";
+//        public static final String USER_AGENT = "Chrome/45.0.2454.101";
+//        public static final String USER_AGENT = "Chrome/45.0.2454.101";
 
         @Override
         public void run() {
@@ -120,10 +123,43 @@ public class WebCrawler {
             }
 
             if (!TextUtils.isEmpty(pageContent.toString())) {
+
                 // START
                 // JSoup Library used to filter urls from html body
-                Document doc = Jsoup.parse(pageContent.toString());
-                Elements links = doc.select("a[href]");
+                Document doc = null;
+               try {
+//                    doc = Jsoup.parse(pageContent);
+                    doc = Jsoup.connect(mUrl).userAgent(USER_AGENT).timeout(5000).get();
+//                   Jsoup.connect(mUrl).userAgent("Mozilla").get();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if(doc!=null){
+                Elements links = doc.select(".r > a");
+
+//                depth++;
+                for (Element link : links) {
+
+
+                    String extractedLink = link.attr("href");
+                    Log.i("TAG22", "extractedLink: " +extractedLink);
+                    if (!TextUtils.isEmpty(extractedLink)) {
+                        synchronized (lock) {
+                            if (!crawledURL.contains(extractedLink) ) {
+                                uncrawledURL.add(extractedLink);
+                                Log.i("TAG22", "run: " + link.absUrl("href"));
+                            }
+                        }
+                    }
+                }}
+                // End JSoup
+
+              /*  // START
+                // JSoup Library used to filter urls from html body
+                Document doc = Jsoup.parse(pageContent);
+                Log.i("doccccccc", "run: doc"+doc);
+                Elements links = doc.select(".r > a[href]");
                 for (Element link : links) {
                     Log.i("links", "run: "+link);
                     String extractedLink = link.attr("href");
@@ -135,7 +171,7 @@ public class WebCrawler {
 
                     }
                 }
-                // End JSoup
+                // End JSoup*/
             }
             // Send msg to handler that crawling for this url is finished
             // start more crawling tasks if queue is not empty
@@ -179,7 +215,7 @@ public class WebCrawler {
                 e.printStackTrace();
                 mCallback.onPageCrawlingFailed(Url, responseCode);
             }
-
+            Log.i("retreiveHtmlContent", "retreiveHtmlContent: pageContent"+pageContent.toString());
             return pageContent.toString();
         }
 

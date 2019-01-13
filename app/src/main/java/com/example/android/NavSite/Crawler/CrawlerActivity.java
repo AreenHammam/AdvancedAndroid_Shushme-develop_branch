@@ -15,12 +15,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.NavSite.PlaceObjDB;
 import com.example.android.NavSite.R;
 import com.example.android.NavSite.itemRecycleViewActivity;
 
 //import org.jsoup.Jsoup;
 //import org.jsoup.nodes.Document;
 //import org.jsoup.select.Elements;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,8 +51,10 @@ public class CrawlerActivity extends Activity implements View.OnClickListener {
     boolean crawlingRunning;
     // For sending message to Handler in order to stop crawling after 60000 ms
     private static final int MSG_STOP_CRAWLING = 111;
-    private static final int CRAWLING_RUNNING_TIME = 2500;
+    private static final int CRAWLING_RUNNING_TIME = 60000;
     private static final int MAX_CRAWLED_URL = 4;
+    public PlaceObjDB[] savedPlacesInDB = new PlaceObjDB[5];
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -178,6 +185,7 @@ public class CrawlerActivity extends Activity implements View.OnClickListener {
             //    Elements links = elements.select("p"); //this is a para inside divisino <div id=mp-tfa><p>...</p>/div>)
             //   mHtmlString = elements.toString();//now mHtmlString contains the text inside the para
 
+
 //            Intent ii = new Intent(this.getApplicationContext(),itemRecycleViewActivity.class);
 //            startActivity(ii);
 //
@@ -233,21 +241,22 @@ public class CrawlerActivity extends Activity implements View.OnClickListener {
             String name = getIntent().getStringExtra("name");
             String address = getIntent().getStringExtra("address");
 
-            name = name.replace(" ", "_");
-            address = address.replace(" ", "_");
-            urlInputView.setText("http://www.google.co.il/search?" + name + " " + address);
+            name = name.replace(" ", "+");
+            address = address.replace(" ", "+");
+            urlInputView.setText("https://www.google.co.il/search?q=" + name + "+" + address+"&lr=lang_en");
             Log.d(TAG, "getIncomingIntent: " + urlInputView.getText().toString()+"id "+getIntent().getStringExtra("id"));
-
-            if (getIntent().getStringExtra("id").equals("ChIJwzsQYMS6HRURJOOQt_quN6s")) {
+            handlePlacesFromDB();
+            int indexInDB=checkIfPlaceInDB(getIntent().getStringExtra("id"));
+            if (indexInDB!=-1) {
                 Log.i(TAG, "getIncomingIntent: id is in db");
                 Intent intent = new Intent(this.getApplicationContext(), itemRecycleViewActivity.class);
-                intent.putExtra("SummaryFromDB","this is from database");
+                intent.putExtra("id",savedPlacesInDB[indexInDB].getId());
+                intent.putExtra("SummaryFromDB",savedPlacesInDB[indexInDB].getSummary());
                 intent.putExtra("isInDB","true");
 
                 startActivity(intent);
             } else {
                 Log.i(TAG, "getIncomingIntent: id is not in db");
-
                 fff(this.startButton);
             }
 
@@ -297,6 +306,28 @@ public class CrawlerActivity extends Activity implements View.OnClickListener {
                 break;
         }
     }
+
+
+
+
+
+    public void handlePlacesFromDB(){
+        // TODO: fill data by index
+        for(int i=0;i<savedPlacesInDB.length;i++){
+            savedPlacesInDB[i]= new PlaceObjDB("ChIJwzsQYMS6HRURJOOQt_quN6s","THIS IS AN EXAMPLE SUMMARY FROM DATA BASE");
+        }
+    }
+
+
+    public int checkIfPlaceInDB(String id){
+        for(int i=0;i<savedPlacesInDB.length;i++){
+            if(savedPlacesInDB[i].getId().equals(id)){
+                return i;
+            }
+        }
+        return -1;
+    }
+
 
 
 }
