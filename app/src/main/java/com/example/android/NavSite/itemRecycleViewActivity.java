@@ -106,14 +106,24 @@ public class itemRecycleViewActivity extends AppCompatActivity {
         txtView.setText(Html.fromHtml("" + str + ""));
         txtView.setClickable(true);
         txtView.setMovementMethod(LinkMovementMethod.getInstance());
-        Log.i(TAG, "summary summary: " + txtView.getText());
+//        Log.i(TAG, "summary summary: " + txtView.getText());
 
         //TODO: only after crawling
         //   File file= new File("C:\\Users\\hamma\\AndroidStudioProjects\\AdvancedAndroid_Shushme-develop_branch\\app\\src\\main\\java\\com\\example\\android\\NavSite\\textSummarizer\\textToSummarize.txt");
 
         Summarizer sum = new Summarizer();
-        String finalSum = sum.Summarize(txtView.getText().toString(), 100);
+        Log.i(TAG, "setTxtData: txtView.getText().toString()" + txtView.getText().toString());
+        String finalSum = sum.Summarize(txtView.getText().toString(), 4);
         txtView.setText(finalSum);
+    }
+
+    public void setTxtData2(String str) {
+        TextView txtView = (TextView) findViewById(R.id.txtData2);
+
+        txtView.setText(Html.fromHtml("" + str + ""));
+        txtView.setClickable(true);
+        txtView.setMovementMethod(LinkMovementMethod.getInstance());
+//        txtView.setText(str);
     }
 
 
@@ -132,7 +142,8 @@ public class itemRecycleViewActivity extends AppCompatActivity {
             int columnIndex2 = mCursor
                     .getColumnIndex(CrawlerDB.COLUMNS_NAME.CRAWLED_PAGE_CONTENT);
             String content = "";
-
+            String content2 = "Refer<br>";
+            int j = 0;
             for (int i = 0; i < count; i++) {
                 Log.d("AndroidSRC_Crawler",
                         "Crawled Url " + mCursor.getString(columnIndex));
@@ -146,9 +157,10 @@ public class itemRecycleViewActivity extends AppCompatActivity {
                         if (false) {
                             text = text.substring(0, 100) + "...";
                         } else {
-                            text += "...";
+                            text += ". ";
                         }
-//                        content += "<br><br><br>" + text + "<br><a href=\"" + mCursor.getString(columnIndex) + "\">" + mCursor.getString(columnIndex) + "</a>\n";
+                        j++;
+                        content2 += "<a href=\"" + mCursor.getString(columnIndex) + "\">" + "link" + j + "</a><br>";
                         content += "<br>" + text + "<br>\n";
                     }
                 }
@@ -156,6 +168,7 @@ public class itemRecycleViewActivity extends AppCompatActivity {
             }
 
             setTxtData(content);
+            setTxtData2(content2);
 
 
         }

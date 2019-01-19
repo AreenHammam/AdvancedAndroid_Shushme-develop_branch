@@ -264,7 +264,7 @@ public class MainActivity extends AppCompatActivity implements
      * @param data        The Intent that carries the result data.
      */
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.i("v", String.valueOf(resultCode));
+//        Log.i("v", String.valueOf(resultCode));
         if (requestCode == PLACE_PICKER_REQUEST && resultCode == RESULT_OK) {
 
             // will get all the information about the selected place in the form of Place object.
@@ -292,6 +292,7 @@ public class MainActivity extends AppCompatActivity implements
                 String placeAddress = place.getAddress().toString();
                 String placeID = place.getId();
                 LatLng lat = place.getLatLng();
+//                Log.i(TAG, "onActivityResult: image"+place);
 
 
                 // Insert a new place into DB

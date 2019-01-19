@@ -53,7 +53,7 @@ public class CrawlerActivity extends Activity implements View.OnClickListener {
     private static final int MSG_STOP_CRAWLING = 111;
     private static final int CRAWLING_RUNNING_TIME = 60000;
     private static final int MAX_CRAWLED_URL = 4;
-    public PlaceObjDB[] savedPlacesInDB = new PlaceObjDB[5];
+    public PlaceObjDB[] savedPlacesInDB = new PlaceObjDB[3];
 
 
     @Override
@@ -313,9 +313,11 @@ public class CrawlerActivity extends Activity implements View.OnClickListener {
 
     public void handlePlacesFromDB(){
         // TODO: fill data by index
-        for(int i=0;i<savedPlacesInDB.length;i++){
-            savedPlacesInDB[i]= new PlaceObjDB("ChIJwzsQYMS6HRURJOOQt_quN6s","THIS IS AN EXAMPLE SUMMARY FROM DATA BASE");
-        }
+      //  for(int i=0;i<savedPlacesInDB.length;i++){
+            savedPlacesInDB[0]= new PlaceObjDB("ChIJwzsQYMS6HRURJOOQt_quN6s","THIS IS AN EXAMPLE SUMMARY FROM DATA BASE");
+            savedPlacesInDB[1]= new PlaceObjDB("ChIJgwDuITmlHRURGq7433WU8fk","THIS IS AN EXAMPLE SUMMARY FROM DATA BASE");
+            savedPlacesInDB[2]= new PlaceObjDB("ChIJwzsQYMS6HRURJOOQt_quN6s","THIS IS AN EXAMPLE SUMMARY FROM DATA BASE");
+      //  }
     }
 
 
